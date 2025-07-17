@@ -1,12 +1,13 @@
-import {useState} from "react";
 import { Box, Container, createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 import NavBar from "./NavBar";
 import { Outlet } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "../store/store";
+import { toggleDarkMode } from "./darkModeSlice";
 
 function App() {
-  const [darkMode, setDarkMode] = useState(false);
-
-  
+  const darkMode = useSelector((state: RootState) => state.darkMode.darkMode);
+  const dispatch = useDispatch();
   const paletteType = darkMode ? 'dark' : 'light';
   const theme = createTheme({
     palette: {
@@ -16,13 +17,15 @@ function App() {
       }
     }
   })
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
+  
+
+  const handleToggleDarkMode = () => {
+    dispatch(toggleDarkMode());
   };
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-    <NavBar darkMode={darkMode} toggleDarkMode={toggleDarkMode}/>
+    <NavBar darkMode={darkMode} toggleDarkMode={handleToggleDarkMode}/>
     <Box sx={{
       minHeight: '100vh',
       backgroundColor: darkMode ? '#121212' : '#eaeaea',
