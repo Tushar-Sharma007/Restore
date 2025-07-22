@@ -1,13 +1,38 @@
-import { Fragment } from "react/jsx-runtime";
+import AppPagination from "../../app/shared/components/AppPagination";
+import { useAppDispatch, useAppSelector } from "../../app/store/store";
+import Filters from "./FIlters";
 import ProductList from "./ProductList";
-import { useFetchProductsQuery } from "./catalogApi";
+import { useFetchFiltersQuery, useFetchProductsQuery } from "./catalogApi";
+import { Grid, Typography } from "@mui/material";
+import { setPageNumber } from "./catalogSlice";
 
 export default function Catalog() {
-  const {data, isLoading} = useFetchProductsQuery();
-  if (isLoading || !data) return <div>Loading products...</div>;
+  const productParams = useAppSelector(state => state.catalog)
+  const { data, isLoading } = useFetchProductsQuery(productParams);
+  const { data: filtersData, isLoading: filtersLoading } = useFetchFiltersQuery();
+  const dispatch = useAppDispatch();
+  if (isLoading || !data || !filtersData || filtersLoading) return <div>Loading products...</div>;
   return (
-    <Fragment>
-      <ProductList products={data} />
-    </Fragment>
+    <Grid container spacing={4}>
+      <Grid size={3}>
+        <Filters filtersData={filtersData}/>
+      </Grid>
+      <Grid size={9}>
+        {data.items && data.items.length > 0 ? (
+          <>
+          <ProductList products={data.items} />
+          <AppPagination
+            metadata={data.pagination}
+            onPageChange={(page: number) => {
+              dispatch(setPageNumber(page));
+              window.scrollTo({top:0, behavior:'smooth'})
+            }}
+          />
+        </>
+        ) : (
+          <Typography variant="h5">There are no results</Typography>
+        )}
+      </Grid>
+    </Grid>
   )
 }

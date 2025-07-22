@@ -1,6 +1,6 @@
 import { Box, Container, createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 import NavBar from "./NavBar";
-import { Outlet } from "react-router-dom";
+import { Outlet, ScrollRestoration } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../store/store";
 import { toggleDarkMode } from "./darkModeSlice";
@@ -11,31 +11,32 @@ function App() {
   const paletteType = darkMode ? 'dark' : 'light';
   const theme = createTheme({
     palette: {
-      mode : paletteType,
-      background : {
+      mode: paletteType,
+      background: {
         default: paletteType === 'dark' ? '#121212' : '#eaeaea',
       }
     }
   })
-  
+
 
   const handleToggleDarkMode = () => {
     dispatch(toggleDarkMode());
   };
   return (
     <ThemeProvider theme={theme}>
+      <ScrollRestoration/>
       <CssBaseline />
-    <NavBar darkMode={darkMode} toggleDarkMode={handleToggleDarkMode}/>
-    <Box sx={{
-      minHeight: '100vh',
-      backgroundColor: darkMode ? '#121212' : '#eaeaea',
-      py : 6
-    }}>
-      <Container maxWidth = 'xl' sx={{mt:8}}>
-        <Outlet/>
-      </Container>
-    </Box>
-      
+      <NavBar darkMode={darkMode} toggleDarkMode={handleToggleDarkMode} />
+      <Box sx={{
+        minHeight: '100vh',
+        backgroundColor: darkMode ? '#121212' : '#eaeaea',
+        py: 6
+      }}>
+        <Container maxWidth='xl' sx={{ mt: 8 }}>
+          <Outlet />
+        </Container>
+      </Box>
+
     </ThemeProvider>
   )
 }

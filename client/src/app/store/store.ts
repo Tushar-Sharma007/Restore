@@ -6,6 +6,7 @@ import { uiSlice } from "../layout/uiSlice";
 import darkModeSlice from "../layout/darkModeSlice";
 import { errorApi } from "../../features/about/errorApi";
 import { cartApi } from "../../features/cart/cartApi";
+import { catalogSlice } from "../../features/catalog/catalogSlice";
 
 export function configureTheStore(){
     return legacy_createStore(counterReducer);
@@ -18,7 +19,8 @@ export const store = configureStore({
         [cartApi.reducerPath]: cartApi.reducer,
         counter: counterSlice.reducer,
         ui: uiSlice.reducer,
-        darkMode: darkModeSlice
+        darkMode: darkModeSlice,
+        catalog: catalogSlice.reducer 
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
