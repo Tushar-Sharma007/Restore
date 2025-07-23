@@ -3,70 +3,76 @@ import { AppBar, Badge, Box, IconButton, LinearProgress, List, ListItem, Toolbar
 import { Link, NavLink } from "react-router-dom";
 import { useAppSelector } from "../store/store";
 import { useFetchCartQuery } from "../../features/cart/cartApi";
+import UserMenu from "./userMenu";
+import { useUserInfoQuery } from "../../features/account/accountApi";
 
 const midLinks = [
-    {title : 'catalog', path: '/catalog'},
-    {title : 'about', path: '/about'},
-    {title : 'contact', path: '/contact'}
+  { title: 'catalog', path: '/catalog' },
+  { title: 'about', path: '/about' },
+  { title: 'contact', path: '/contact' }
 ]
 
 const rightLinks = [
-    {title : 'login', path: '/login'},
-    {title : 'register', path: '/register'}
+  { title: 'login', path: '/login' },
+  { title: 'register', path: '/register' }
 ]
 
 const navStyles = {
-  color:'inherit',
-  typography:'h6',
+  color: 'inherit',
+  typography: 'h6',
   textDecoration: 'none',
-  '&:hover':{
+  '&:hover': {
     color: 'grey.500'
   },
   '&.active': {
-    color: '#9ce8ffff',
+    color: '#9cccffff',
   }
 }
 
-type NavBarProps ={
+type NavBarProps = {
   darkMode: boolean;
   toggleDarkMode: () => void;
 }
 export default function NavBar({ darkMode, toggleDarkMode }: NavBarProps) {
-  const {isLoading} = useAppSelector(state => state.ui);
-  const {data: cart} = useFetchCartQuery();
+  const {data : user} = useUserInfoQuery();
+  const { isLoading } = useAppSelector(state => state.ui);
+  const { data: cart } = useFetchCartQuery();
 
   const itemCount = cart?.items.reduce((sum, item) => sum + item.quantity, 0) || 0;
   return (
     <AppBar position="fixed">
-        <Toolbar sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-          <Box sx={{display: 'flex', alignItems: 'center'}}>
-            <Typography component={NavLink} to={'/'} variant="h6" sx={navStyles}>RE-STORE</Typography>
-            <IconButton onClick={toggleDarkMode}>
-              {darkMode ? <DarkMode /> : <LightMode sx={{color : 'yellow'}}/>}
-            </IconButton>
-          </Box>
-            
-            <List sx={{display:'flex'}}>
-              {midLinks.map(({title, path}) => (
-                <ListItem
-                  component={NavLink}
-                  to={path}
-                  key={path}
-                  sx={navStyles}
-                >
-                  {title.toUpperCase()}
-                </ListItem>
-                ))}
-            </List>
-            <Box sx={{display: 'flex', alignItems: 'center'}}>
-                <IconButton component={Link} to = '/cart'  size="large" sx={{color: 'inherit'}}>
-              <Badge badgeContent={itemCount} color="secondary">
-                <ShoppingCart/>
-              </Badge>
-            </IconButton>
+      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Typography component={NavLink} to={'/'} variant="h6" sx={navStyles}>RE-STORE</Typography>
+          <IconButton onClick={toggleDarkMode}>
+            {darkMode ? <DarkMode /> : <LightMode sx={{ color: 'yellow' }} />}
+          </IconButton>
+        </Box>
 
-            <List sx={{display:'flex'}}>
-              {rightLinks.map(({title, path}) => (
+        <List sx={{ display: 'flex' }}>
+          {midLinks.map(({ title, path }) => (
+            <ListItem
+              component={NavLink}
+              to={path}
+              key={path}
+              sx={navStyles}
+            >
+              {title.toUpperCase()}
+            </ListItem>
+          ))}
+        </List>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <IconButton component={Link} to='/cart' size="large" sx={{ color: 'inherit' }}>
+            <Badge badgeContent={itemCount} color="secondary">
+              <ShoppingCart />
+            </Badge>
+          </IconButton>
+
+          {user ? (
+            <UserMenu user={user} />
+          ) : (
+            <List sx={{ display: 'flex' }}>
+              {rightLinks.map(({ title, path }) => (
                 <ListItem
                   component={NavLink}
                   to={path}
@@ -75,17 +81,20 @@ export default function NavBar({ darkMode, toggleDarkMode }: NavBarProps) {
                 >
                   {title.toUpperCase()}
                 </ListItem>
-                ))}
+              ))}
             </List>
-            </Box>
-            
-            
-        </Toolbar>
-        {isLoading && (
-          <Box sx={{width: '100%'}}>
-            <LinearProgress color="secondary" />
-          </Box>
-        )}
+          )}
+
+
+        </Box>
+
+
+      </Toolbar>
+      {isLoading && (
+        <Box sx={{ width: '100%' }}>
+          <LinearProgress color="secondary" />
+        </Box>
+      )}
     </AppBar>
   )
 }
