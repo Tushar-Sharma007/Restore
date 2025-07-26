@@ -1,10 +1,11 @@
 import AppPagination from "../../app/shared/components/AppPagination";
 import { useAppDispatch, useAppSelector } from "../../app/store/store";
-import Filters from "./FIlters";
+
 import ProductList from "./ProductList";
 import { useFetchFiltersQuery, useFetchProductsQuery } from "./catalogApi";
 import { Grid, Typography } from "@mui/material";
 import { setPageNumber } from "./catalogSlice";
+import Filters from "./Filters";
 
 export default function Catalog() {
   const productParams = useAppSelector(state => state.catalog)
